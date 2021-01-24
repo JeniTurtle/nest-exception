@@ -33,10 +33,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = host.switchToHttp().getResponse();
     const status = exception.getStatus ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
     try {
-      this.logger.error(exception.stack || exception.message);
       // 对默认的404进行处理
       if (status === HttpStatus.NOT_FOUND) {
         exception = new PageNotFoundException();
+      } else {
+        this.logger.error(exception.stack || exception.message);
       }
       if (!Number(exception.code)) {
         exception = new SystemException({
